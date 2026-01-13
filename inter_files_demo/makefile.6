@@ -1,0 +1,43 @@
+# Compiler
+CC = gcc
+
+# Directories
+SRCDIR = src
+INCDIR = include
+OBJDIR = obj
+BINDIR = bin
+
+# Compiler flags
+CFLAGS = -Wall -Wextra -I$(INCDIR)
+
+# Source files
+SRC = $(wildcard $(SRCDIR)/*.c)
+OBJ = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
+
+# Target binary
+TARGET = $(BINDIR)/hellomake
+
+# Default target
+all: $(TARGET)
+
+# Link object files -> binary
+$(TARGET): $(OBJ) | $(BINDIR)
+	$(CC) $^ -o $@
+
+# Compile .c -> .o inside obj/
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Create directories if missing
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+$(BINDIR):
+	mkdir -p $(BINDIR)
+
+# Clean
+clean:
+	rm -rf $(OBJDIR)/*.o $(TARGET)
+
+.PHONY: all clean
+
